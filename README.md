@@ -1,4 +1,4 @@
-# Triangulation-Photogrammetry GEO1006 - Assignment 2
+# Triangulation-Photogrammetry GEO1016 - Assignment 2
 Availiable online: https://3d.bk.tudelft.nl/courses/geo1016/assignments.html (Accessed on 05-04-2021)
 
 Initial files extracted from .zip:
