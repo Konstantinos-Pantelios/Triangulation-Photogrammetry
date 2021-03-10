@@ -241,6 +241,49 @@ bool Triangulation::triangulation(
     }
     std::cout << points1 << std::endl;
 
+    Matrix<double>A(points1.size(),9);
+    for (int i = 0; i < points1.size(); i++){
+        auto a = points1[i].x * points2[i].x;
+        auto b = points1[i].y * points2[i].x;
+        auto c = points2[i].x;
+        auto d = points1[i].x * points2[i].y;
+        auto e = points1[i].y * points2[i].y;
+        auto f = points2[i].y;
+        auto g = points1[i].x;
+        auto h = points1[i].y;
+        A.set(i,0,a); A.set(i,1,b); A.set(i,2,c); A.set(i,3,d);
+        A.set(i,4,e); A.set(i,5,f); A.set(i,6,g); A.set(i,7,h);
+        A.set(i,8,1);
+    }
+    std::cout << A << std::endl;
+
+    Matrix<double> AT = A.transpose();
+    Matrix<double> ATA = AT*A;
+    std::cout << "AT * A" << AT*A << std::endl;
+
+
+
+    Matrix<double> U(ATA.rows(), ATA.rows(), 0.0);   // initialized with 0s
+    Matrix<double> S(ATA.rows(), ATA.cols(), 0.0);   // initialized with 0s
+    Matrix<double> V(ATA.cols(), ATA.cols(), 0.0);   // initialized with 0s
+
+    // Compute the SVD decomposition of A
+    svd_decompose(ATA, U, S, V);
+    S.set(S.rows()-1,S.cols()-1,0.0);
+    std::cout << "V" << V << std::endl;
+    std::cout << "S" << S << std::endl;
+    std::cout << "U" << U << std::endl;
+
+    auto count = 0;
+    auto vcol = V.get_column(V.cols()-1);
+    for (int i = 0; i < 9; i=i+3){
+        std::vector<double> v1 = V.get_column(V.cols()-1);
+        vec3 v = {float(v1[i+0]),float(v1[i+1]),float(v1[i+2])};
+        F.set_row(count,v);
+        count++;
+    }
+    std::cout << "F" << std::endl <<  F << std::endl;
+
 
     // TODO: check if the input is valid (always good because you never known how others will call your function).
 
