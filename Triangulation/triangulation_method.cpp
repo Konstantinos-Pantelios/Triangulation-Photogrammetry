@@ -269,9 +269,9 @@ bool Triangulation::triangulation(
 
     // Compute the SVD decomposition of A
     svd_decompose(ATA, U, S, V);
-    std::cout << "V" << V << std::endl;
-    std::cout << "S" << S << std::endl;
     std::cout << "U" << U << std::endl;
+    std::cout << "S" << S << std::endl;
+    std::cout << "V" << V << std::endl;
 
     auto count = 0;
     auto vcol = V.get_column(V.cols()-1);
@@ -290,10 +290,20 @@ bool Triangulation::triangulation(
     Matrix<double> v(Fm.cols(), Fm.cols(), 0.0);   // initialized with 0s
     svd_decompose(Fm, u, s, v);
     s.set(s.rows()-1,s.cols()-1,0.0);
-    std::cout << "V" << u << std::endl;
-    std::cout << "S" << s << std::endl;
     std::cout << "U" << u << std::endl;
+    std::cout << "S" << s << std::endl;
+    std::cout << "V" << v << std::endl;
     std::cout << "Fm" << std::endl <<  Fm << std::endl;
+
+    auto Ftemp = u*s*v;
+    std::cout << "Ftemp" << std::endl <<  Ftemp << std::endl;
+
+    auto Ft = to_mat3(Ftemp);
+    count=0;
+    for (int i = 0; i < 3; i++){
+        F.set_row(i,Ft.row(i));
+    }
+    std::cout << "F" << std::endl <<  F << std::endl;
 
 
     // TODO: check if the input is valid (always good because you never known how others will call your function).
