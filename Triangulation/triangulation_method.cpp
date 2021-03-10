@@ -173,6 +173,80 @@ bool Triangulation::triangulation(
 
     //--------------------------------------------------------------------------------------------------------------
     // implementation starts ...
+      //************************************ Normalization of points for image1 and image2 *************************************************** //
+
+    float x_1= 0; // image 1
+    float y_1 = 0;
+    float x_2= 0; // image 2
+    float y_2 = 0;
+    std::vector<float> x_m1;
+    std::vector<float> y_m1;
+    std::vector<float> x_m2;
+    std::vector<float> y_m2;
+
+    for (vec3 p1: points_0){
+        x_1 = x_1 + p1[0];
+        y_1 = y_1 + p1[1];
+    }
+
+    for (vec3 p2: points_1){
+        x_2 = x_2 + p2[0];
+        y_2 = y_2 + p2[1];
+    }
+
+    vec2 centroid1 = {x_1 / points_0.size(),y_1 / points_0.size() };
+    vec2 centroid2 = {x_2 / points_0.size(),y_2 / points_0.size() };
+
+    float s1=0;
+    float s2=0;
+
+    for (int i=0; i<points_0.size(); i++) {
+
+        float xmean1 = points_0[i]._array[0] - centroid1[0];
+        float ymean1 = points_0[i]._array[1] - centroid1[1];
+        x_m1.push_back(xmean1);
+        y_m1.push_back(ymean1);
+        s1 = s1 + (x_m1[i]*x_m1[i]+y_m1[i]*y_m1[i]);
+
+        float xmean2 = points_1[i]._array[0] - centroid2[0];
+        float ymean2 = points_1[i]._array[1] - centroid2[1];
+        x_m2.push_back(xmean2);
+        y_m2.push_back(ymean2);
+        s2 = s2 + (x_m2[i]*x_m2[i]+y_m2[i]*y_m2[i]);
+    }
+    s1 = sqrt(2)/sqrt(s1); // scale factor for image 1 : 0.000648619
+    s2 = sqrt(2)/sqrt(s2); // scale factor for image 2 : 0.000746701
+
+    mat3 T1; //Transformation matrix image 1
+    mat3 T2; // Transformation matrix image 2
+
+    T1.set_row(0,vec3(s1, 0 , -(s1*centroid1[0])));
+    T1.set_row(1,vec3(0, s1 , -(s1*centroid1[1])));
+    T1.set_row(2,vec3(0, 0 , 1));
+
+    T2.set_row(0,vec3(s2, 0 , -(s2*centroid2[0])));
+    T2.set_row(1,vec3(0, s2 , -(s2*centroid2[1])));
+    T2.set_row(2,vec3(0, 0 , 1));
+
+    float points1[3];
+    float points2[3];
+
+    for (int i=0;i<3;i++)
+    {
+        points1[i]=0;
+        points2[i]=0;
+    }
+
+ /*   for (int i=0; i < points_0.size(); i++) {
+        for(int r=0; r<3; r++){
+            for (int k=0; k<3; k++){
+                points1[r] += (T1[r][k]*points_0[i]._array[0]);
+            }
+        }
+
+    }
+ */
+
 
     // TODO: check if the input is valid (always good because you never known how others will call your function).
 
