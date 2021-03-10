@@ -228,24 +228,18 @@ bool Triangulation::triangulation(
     T2.set_row(1,vec3(0, s2 , -(s2*centroid2[1])));
     T2.set_row(2,vec3(0, 0 , 1));
 
-    float points1[3];
-    float points2[3];
 
-    for (int i=0;i<3;i++)
-    {
-        points1[i]=0;
-        points2[i]=0;
+    vec3 a = T1.operator*({points_0[0].x,points_0[0].y,points_0[0].z});
+    std::cout << T1 << std::endl << points_0[0].x <<" "<< points_0[0].y<< " "<<points_0[0].z<< std::endl <<a << std::endl;
+
+    std::vector<vec3> points1;
+    std::vector<vec3> points2;
+
+    for (int i =0; i < points_0.size(); i++){
+        points1.push_back(T1.operator*({points_0[i].x,points_0[i].y,points_0[i].z}));
+        points2.push_back(T2.operator*({points_1[i].x,points_1[i].y,points_1[i].z}));
     }
-
- /*   for (int i=0; i < points_0.size(); i++) {
-        for(int r=0; r<3; r++){
-            for (int k=0; k<3; k++){
-                points1[r] += (T1[r][k]*points_0[i]._array[0]);
-            }
-        }
-
-    }
- */
+    std::cout << points1 << std::endl;
 
 
     // TODO: check if the input is valid (always good because you never known how others will call your function).
