@@ -19,3 +19,4 @@ Files that were modified (M) or added (A) for the purpose of the assignment:
 
 Other files:
 1. README.md
+2. Assignment2_report.pdf
