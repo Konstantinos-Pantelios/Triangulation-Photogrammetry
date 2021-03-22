@@ -54,8 +54,6 @@ Matrix<double> to_Matrix(const mat &M) {
     return result;
 }
 
-
-
 mat34 Rt_selection( mat3 R, vec3 t) {
 
     mat34 Rt; // 3 by 4
@@ -67,6 +65,7 @@ mat34 Rt_selection( mat3 R, vec3 t) {
     return Rt;
 }
 // ****************************** Triangulation function : returns the 3D Point **************************************//
+
 vec3 triangulation1(vec3 p0, vec3 p1, mat3 K, mat34 Rt, mat34 Rt0){
     mat34   M1 = K*Rt0; // 3 by 4 M // for the second camera
     mat34   M2 = K*Rt;
@@ -108,118 +107,25 @@ bool Triangulation::triangulation(
 
         ) const
 
+/***************************************** Check the validity of the input datasets ********************************* */
 
-{    for (int i = 0; i < points_0.size(); i++){
-        if (points_0[i].size() !=points_1.size() && points_0[i].z ==1 && points_1[i].z==1 && points_0[i].size() ==3  && points_1[i].size()==3){
+{    for (int i = 0; i < points_0.size(); i++) {
+        if ( (points_0[i].size() == points_1[i].size()) && (points_0.size() >=8 && points_1.size() >=8) &&
+              points_0[i].z == 1 && points_1[i].z == 1 && points_0[i].size() == 3 && points_1[i].size() == 3) {
             continue;
-        }
-        else{
+        } else {
             std::cout << "Input files are not correct. \n";
             return false;
         }
     }
 
-    /// NOTE: there might be multiple workflows for reconstructing 3D geometry from corresponding image points.
-    ///       This assignment uses the commonly used one explained in our lecture.
-    ///       It is advised to define a function for each sub-task. This way you have a clean and well-structured
-    ///       implementation, which also makes testing and debugging easier. You can put your other functions above
-    ///       triangulation(), or feel free to put them in one or multiple separate files.
 
     std::cout << "\nTODO: I am going to implement the triangulation() function in the following file:" << std::endl
               << "\t    - triangulation_method.cpp\n\n";
 
-    std::cout << "[Liangliang]:\n"
-                 "\tFeel free to use any data structure and function offered by Easy3D, in particular the following two\n"
-                 "\tfiles for vectors and matrices:\n"
-                 "\t    - easy3d/core/mat.h  Fixed-size matrices and related functions.\n"
-                 "\t    - easy3d/core/vec.h  Fixed-size vectors and related functions.\n"
-                 "\tFor matrices with unknown sizes (e.g., when handling an unknown number of corresponding points\n"
-                 "\tstored in a file, where their sizes can only be known at run time), a dynamic-sized matrix data\n"
-                 "\tstructure is necessary. In this case, you can use the templated 'Matrix' class defined in\n"
-                 "\t    - Triangulation/matrix.h  Matrices of arbitrary dimensions and related functions.\n"
-                 "\tPlease refer to the corresponding header files for more details of these data structures.\n\n"
-                 "\tIf you choose to implement the non-linear method for triangulation (optional task). Please refer to\n"
-                 "\t'Tutorial_NonlinearLeastSquares/main.cpp' for an example and some explanations. \n\n"
-                 "\tIn your final submission, please\n"
-                 "\t    - delete ALL unrelated test or debug code and avoid unnecessary output.\n"
-                 "\t    - include all the source code (original code framework + your implementation).\n"
-                 "\t    - do NOT include the 'build' directory (which contains the intermediate files in a build step).\n"
-                 "\t    - make sure your code compiles and can reproduce your results without any modification.\n\n" << std::flush;
-
-    /// Easy3D provides fixed-size matrix types, e.g., mat2 (2x2), mat3 (3x3), mat4 (4x4), mat34 (3x4).
-    /// To use these matrices, their sizes should be known to you at the compile-time (i.e., when compiling your code).
-    /// Once defined, their sizes can NOT be changed.
-    /// In 'Triangulation/matrix.h', another templated 'Matrix' type is also provided. This type can have arbitrary
-    /// dimensions and their sizes can be specified at run-time (i.e., when executing your program).
-    /// Below are a few examples showing some of these data structures and related APIs.
-
-    /// ----------- fixed-size matrices
-
-    /// define a 3 by 4 matrix M (you can also define 3 by 4 matrix similarly)
-    mat34 M(1.0f);  /// entries on the diagonal are initialized to be 1 and others to be 0.
-
-    /// set the first row of M
-    M.set_row(0, vec4(1,1,1,1));    /// vec4 is a 4D vector.
-
-    /// set the second column of M
-    M.set_col(1, vec4(2,2,2,2));
-
-    /// get the 3 rows of M
-    vec4 M1 = M.row(0);
-    vec4 M2 = M.row(1);
-    vec4 M3 = M.row(2);
-
-    /// ----------- fixed-size vectors
-
-    /// how to quickly initialize a std::vector
-    std::vector<double> rows = {0, 1, 2, 3,
-                                4, 5, 6, 7,
-                                8, 9, 10, 11};
-    /// get the '2'-th row of M
-    const vec4 b = M.row(2);    // it assigns the requested row to a new vector b
-
-    /// get the '1'-th column of M
-    const vec3 c = M.col(1);    // it assigns the requested column to a new vector c
-
-    /// modify the element value at row 2 and column 1 (Note the 0-based indices)
-    M(2, 1) = b.x;
-
-    /// apply transformation M on a 3D point p (p is a 3D vector)
-    vec3 p(222, 444, 333);
-    vec3 proj = M * vec4(p, 1.0f);  // use the homogenous coordinates. result is a 3D vector
-
-    /// the length of a vector
-    float len = p.length();
-    /// the squared length of a vector
-    float sqr_len = p.length2();
-
-    /// the dot product of two vectors
-    float dot_prod = dot(p, proj);
-
-    /// the cross product of two vectors
-    vec3 cross_prod = cross(p, proj);
-
-    /// normalize this vector
-    cross_prod.normalize();
-
-    /// a 3 by 3 matrix (all entries are intentionally NOT initialized for efficiency reasons)
     mat3 F;
-    /// ... here you compute or initialize F.
-    /// compute the inverse of K
     mat3 invF = inverse(F);
 
-    /// ----------- dynamic-size matrices
-
-    /// define a non-fixed size matrix
-    Matrix<double> W2(2, 3, 0.0); // all entries initialized to 0.0.
-
-    /// set its first row by a 3D vector (1.1, 2.2, 3.3)
-    W2.set_row({ 1.1, 2.2, 3.3 }, 0);   // here "{ 1.1, 2.2, 3.3 }" is of type 'std::vector<double>'
-
-    /// get the last column of a matrix
-    std::vector<double> last_column = W2.get_column(W2.cols() - 1);
-
-    // TODO: delete all above demo code in the final submission
 
 //******************************** Normalization of points: image1 and image2 ****************************************//
 
@@ -284,7 +190,7 @@ bool Triangulation::triangulation(
     T2.set_row(2,vec3(0, 0 , 1));
 
 //
-//    for (int i =0; i<points_0.size(); i++){
+//    for (int i =0; i<points_0.size(); i++){  //different way same result
 //        points1.push_back((points_0[i] - centroid1)*s1);
 //        points2.push_back((points_1[i] - centroid2)*s2);
 //    }
@@ -294,8 +200,8 @@ bool Triangulation::triangulation(
         points1.push_back(T1.operator*({points_0[i].x,points_0[i].y,points_0[i].z}));
         points2.push_back(T2.operator*({points_1[i].x,points_1[i].y,points_1[i].z}));
     }
- std::cout<< points1<<std::endl;
-//********************************************   Foundamental matrix construction ************************************//
+
+//********************************************   Fundamental matrix construction  ************************************//
 
     Matrix<double> W1(points_0.size(),9);
     for (int i = 0; i < points_0.size(); i++){
@@ -341,7 +247,10 @@ bool Triangulation::triangulation(
     F = transpose(T2)*F*T1;   //de-normalization
     F = F/(F(2,2));  //set the last column's element =1 : second constraint
 
+    //auto k = determinant(F); // detF = 0
+
     std::cout << "Foundamental matrix F = " << std::endl << F << std::endl;
+
 
     //matrix K same for both images
     mat3 K;
@@ -384,6 +293,11 @@ bool Triangulation::triangulation(
 
     R1 = to_mat3(Ue)*W*transpose(to_mat3(Ve))*determinant(to_Matrix(to_mat3(Ue)*W*transpose(to_mat3(Ve)))); //mat3 float : first case where R = det(UWVT)UWVT
     R2 =  to_mat3(Ue)*transpose(W)*transpose(to_mat3(Ve))*determinant(to_Matrix(to_mat3(Ue)*transpose(W)*transpose(to_mat3(Ve)))); //mat3 float: second case where R = det(UWVTT)UWTVT
+
+    auto detR1 = determinant(R1);
+    auto detR2 = determinant(R2);
+
+ //  std::cout<< detR1 << " "<< detR2<< std::endl;
 
     std::vector<vec3> casest = {t1,t2,t1,t2};
     std::vector<mat3> casesR = {R1,R1,R2,R2};
@@ -470,20 +384,11 @@ bool Triangulation::triangulation(
     R = casesR[counter1];
     t = casest[counter1];
     std::vector<std::string> cases = {"R = det((U W V^T)(U W V^T)), t = +u3","R = det((U W V^T)(U W V^T)), t = -u3","R = det((U W^T V^T)(U W^T V^T)), t = +u3","R = det((U W^T V^T)(U W^T V^T)), t = -u3"};
-    std::cout<< "Rotation matrix R "<< R << " "<< " Determinant of matrix R" << std::endl;
+    std::cout<< "Rotation matrix R \n"<< R << " " << " Determinant of matrix R" << " "<< determinant(R) << std::endl;
     std::cout<< " Vector t " << t << std::endl;
     std::cout<<" Points with positive z values" << " "<< z_coords[counter1] << std::endl;
     std::cout<< " Case number " << counter1+1 << " -> "<< cases[counter1]<< std::endl;
 
-    // TODO: check if the input is valid (always good because you never known how others will call your function).
 
-
-    // TODO: Don't forget to
-    //       You must return either 'true' or 'false' to indicate whether the triangulation was successful (so the
-    //       viewer will be notified to visualize the 3D points and update the view).
-    //       However, there are a few cases you should return 'false' instead, for example:
-    //          - function not implemented yet;
-    //          - input not valid (e.g., not enough points, point numbers don't match);
-    //          - encountered failure in any step.
     return points_3d.size() > 0;
 }
