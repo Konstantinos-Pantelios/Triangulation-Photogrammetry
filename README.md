@@ -13,8 +13,9 @@ Initial files extracted from A2_Triangulation.zip:
 
 Files that were modified (M) or added (A) for the purpose of the assignment:
 1. Triangulation>triangulation_method.cpp (M) 
-2. images (folder) and its contents (A) 
-3. triangulation.xyz (A)
+2. Triangulation>triangulation.cpp (M)
+3. images (folder) and its contents (A) 
+4. triangulation.xyz (A)
 
 Other files:
 1. README.md
